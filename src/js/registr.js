@@ -1,10 +1,10 @@
 
 const token = JSON.parse(localStorage.getItem('user')) || null;
 if(!token &&  !window.location.href.includes('login.html')) {
-    window.location.href = 'http://127.0.0.1:5500/pages/login.html'
+    window.location.href = '/pages/login.html'
     console.log("login yoki registir qiling");
 } else if(token && !window.location.href.includes('index.html') ) {
-    window.location.href = 'http://127.0.0.1:5500/index.html'
+    window.location.href = '/index.html'
 }
 
 const formRegister = document.getElementById("formRegister")
