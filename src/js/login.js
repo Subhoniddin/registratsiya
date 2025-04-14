@@ -1,3 +1,7 @@
+import { loading } from "./html-Elaments.js";
+import registr from "./request.js";
+import toast from "./toast.js";
+import validator from "./validator.js";
 
 const token = JSON.parse(localStorage.getItem('user')) || null;
 if(!token && !window.location.href.includes('login.html')) {
@@ -12,22 +16,21 @@ const formLogin = document.getElementById("formLogin")
 formLogin.addEventListener("submit", (e) => {
     e.preventDefault()
     const formData = new FormData(formLogin)
-    let formObj = {};
-    formData.forEach((value, key) => formObj[key] = value); 
     
-    async function login() {
-    let req =  await fetch("https://json-api.uz/api/project/fn37/auth/login", {
-            method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify(formObj)
-        });
-        let res = await req.json()
+    const cleanForm = validator(formData);
 
-        if(req.status === 200) {
-            localStorage.setItem("user", JSON.stringify(res))
-            window.location.href = 'http://127.0.0.1:5500/index.html'
-        }
-   }
-   login()
+    if(cleanForm) {
+        const req = registr(cleanForm, 'https://json-api.uz/api/project/fn37/auth/login')
+        req.then(res => {
+            if(res) {
+                toast('success', "Muvaffaqqiyatli") 
+                setTimeout(() => {loading.classList.add('hidden')}, 2300)
+            } else {
+                toast('error', "Login parolni to'g'ri kiriting")
+            }
+        })
+          
+    }
+    
    formLogin.reset()
 })

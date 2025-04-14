@@ -1,30 +1,34 @@
+import { formRegister, loading } from "./html-Elaments.js";
+import registr from "./request.js";
+import toast from "./toast.js";
+import validator from "./validator.js";
 
 const token = JSON.parse(localStorage.getItem('user')) || null;
-if(!token &&  !window.location.href.includes('login.html')) {
-    window.location.href = '/pages/login.html'
+let userLocation = window.location.href;
+console.log(userLocation);
+
+
+if((!token &&  (!userLocation.includes('login.html') || !userLocation.includes('registr.html'))) ) {
+    userLocation = '/pages/login.html'
     console.log("login yoki registir qiling");
-} else if(token && !window.location.href.includes('index.html') ) {
+} else if(token && !userLocation.includes('index.html') ) {
     window.location.href = '/index.html'
 }
 
-const formRegister = document.getElementById("formRegister")
-
 formRegister.addEventListener("submit", (e) => {
-    e.preventDefault()
-    const formData = new FormData(formRegister)
-    let formObj = {};
-    formData.forEach((value, key) => formObj[key] = value); 
+    e.preventDefault();
+    console.log('submit');
     
-    async function registr() {
-    let req =  await fetch("https://json-api.uz/api/project/fn37/auth/register", {
-            method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify(formObj)
-        });
-        let res = await req.json()
-        console.log(req);
-        
-   }
-   registr()
+    const formData = new FormData(formRegister)
+    
+    const cleanForm = validator(formData)
+    if(cleanForm) {
+
+        toast('success', "Muvaffaqqiyatli")
+        let req = registr(cleanForm, 'https://json-api.uz/api/project/fn37/auth/register')
+        if(req) {registr(cleanForm, 'https://json-api.uz/api/project/fn37/auth/login')}
+        loading.classList.add('hidden')
+    }
+
    formRegister.reset()
 })

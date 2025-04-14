@@ -2,3 +2,16 @@
 @import "flowbite/src/themes/default";
 @plugin "flowbite/plugin";
 @source "../node_modules/flowbite";
+
+@theme {
+    --animate-animateToast: animateToast 0.5s ease-in-out both;
+    @keyframes animateToast {
+        0% {
+            opacity: 0%;
+        }
+        100% {
+            opacity: 100%;
+            top: 30px;
+        }
+    }
+  }
